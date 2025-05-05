@@ -96,11 +96,11 @@ public class CNN {
      * @throws IOException if the image file isn't found.
      */
     public static BufferedImage mnist_load_random(int label) throws IOException {
-        String mnist_path = "data\\mnist_png\\mnist_png\\training";
-        File dir = new File(mnist_path + "\\" + label);
+        String mnist_path = String.join(File.separator, "data", "mnist_png", "mnist_png", "training");
+        File dir = new File(String.join(File.separator, mnist_path, ""+label));
         String[] files = dir.list();
         int random_index = new Random().nextInt(files.length);
-        String final_path = mnist_path + "\\" + label + "\\" + files[random_index];
+        String final_path = String.join(File.separator, mnist_path, ""+label, files[random_index]);
         BufferedImage bi = load_image(final_path);
         return bi;
     }
@@ -176,7 +176,25 @@ public class CNN {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {      
-        train(30000);
+        int trainNumber = 0;
+        if(args.length > 0) {
+            String myArg = args[0];
+            try{
+                int parsedInt = Integer.parseInt(myArg);
+                if(parsedInt > 0 && parsedInt <= 30000){
+                    trainNumber = parsedInt;
+                }
+            }catch(NumberFormatException e) {
+                System.err.println("Error: the argument should be an integer bigger than 0.");
+            }
+        }
+        else {
+            System.err.println("Use the default train number 30000.");
+        }
+        if(trainNumber == 0){
+            trainNumber = 30000;
+        }
+        train(trainNumber);
     }
 
 }
